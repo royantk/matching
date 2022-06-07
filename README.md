@@ -13,3 +13,11 @@ Voici les arguments qu'un `slot` possède :
 - *`weeks`* *(bin)* : Ce nombre représente la répartition de ce créneau sur le mois (ex : **0101** indique qu'il sera présent en semaines 2 et 4)
 - *`level`* : *(int)* : Niveau minimum comédien
 - *`category`* *(int ou string on verra)* : Catégorie du comédien (0 ou vide = Tout, 1 = Femme, 2 = Homme)
+
+## Caractéristiques d'un comédien : `artist`
+
+Voici les arguments qu'un `artist` possède :
+
+- *`name`* : *(string)* : Nom du comédien 
+- *`level`* : *(int)* : Niveau du comédien
+- *`category`* *(int ou string on verra)* : Catégorie du comédien (1 = Femme, 2 = Homme)

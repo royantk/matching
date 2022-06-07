@@ -23,74 +23,14 @@
     },
     "artists": {
         "artist 1": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "M"
+            "name": "Prénom Nom",
+            "level": "1",
+            "category": "M"
         },
         "artist 2": {
-            "name": "Jesuis Artist",
-            "category": "2",
-            "sexe": "F"
-        },
-        "artist 3": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "M"
-        },
-        "artist 4": {
-            "name": "Jesuis Artist",
-            "category": "3",
-            "sexe": "F"
-        },
-        "artist 5": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "M"
-        },
-        "artist 6": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "M"
-        },
-        "artist 7": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "M"
-        },
-        "artist 8": {
-            "name": "Jesuis Artist",
-            "category": "2",
-            "sexe": "M"
-        },
-        "artist 9": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "M"
-        },
-        "artist 10": {
-            "name": "Jesuis Artist",
-            "category": "2",
-            "sexe": "M"
-        },
-        "artist 11": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "M"
-        },
-        "artist 12": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "F"
-        },
-        "artist 13": {
-            "name": "Jesuis Artist",
-            "category": "3",
-            "sexe": "M"
-        },
-        "artist 14": {
-            "name": "Jesuis Artist",
-            "category": "1",
-            "sexe": "M"
+            "name": "Prénom",
+            "level": "2",
+            "category": "F"
         }
     }
 }

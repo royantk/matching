@@ -1,6 +1,6 @@
 # Documentation
 
-L'algorithme de matching doit permettre de répartir les différents comédiens sur différents créneaux horaires en fonction de leurs caractéristiques.
+L'algorithme de matching doit permettre de **répartir les différents comédiens sur différents créneaux horaires** en fonction de leurs caractéristiques.
 
 ## Caractéristiques d'un créneau : `slot`
 
@@ -14,6 +14,19 @@ Voici les arguments qu'un `slot` possède :
 - *`level`* : *(int)* : Niveau minimum comédien
 - *`category`* *(int ou string on verra)* : Catégorie du comédien (0 ou vide = Tout, 1 = Femme, 2 = Homme)
 
+```json
+"slots": {
+        "slot1": {
+            "day": 1,
+            "hour": "15:00",
+            "capacity": 6,
+            "frequency": 1,
+            "level": 1,
+            "category": "F"
+        }
+}
+```
+
 ## Caractéristiques d'un comédien : `artist`
 
 Voici les arguments qu'un `artist` possède :
@@ -21,3 +34,13 @@ Voici les arguments qu'un `artist` possède :
 - *`name`* : *(string)* : Nom du comédien
 - *`level`* : *(int)* : Niveau du comédien
 - *`category`* *(int ou string on verra)* : Catégorie du comédien (1 = Femme, 2 = Homme)
+
+```json
+"artists": {
+        "artist 1": {
+            "name": "Prénom Nom",
+            "level": "1",
+            "category": "M"
+        }
+}
+```

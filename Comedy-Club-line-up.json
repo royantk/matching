@@ -1,12 +1,12 @@
 {
     "slots": {
         "slot1": {
-            "day": 1, // 1 = Lundi
+            "day": 1,
             "hour": "15:00",
             "capacity": 6,
-            "frequency": 1, // 1 = Une fois par mois, jusqu'à 4
-            "level": 1, // Niveau minimum comédien
-            "category": "F" // H/F 
+            "frequency": 1,
+            "level": 1,
+            "category": "F"
         },
         "slot2": {
             "day": 2,

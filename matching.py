@@ -1,10 +1,34 @@
+
+'''
+══════════════════════════
+  ALGORITHME DE MATCHING  
+     Créé par Maghen      
+══════════════════════════
+'''
+
+#####################
+##     Modules     ##
+#####################
+
 import json
+from pulp import LpMaximize, LpProblem, LpStatus, lpSum, LpVariable
 
-# Import des paramètres
+################################
+##     Import des données     ##
+################################
 
-parameters = open("Comedy-Club-line-up.json")
-json.JSONDecoder.decode(parameters.read)
 
-# Résolution du problème d'optimisation linéaire
+parameters = open("Comedy-Club-line-up.json").read()
 
-prob = LpProblem("Matching", LpMaximize)
+slots = json.loads(str(parameters))["slots"]
+artists = json.loads(str(parameters))["artists"]
+
+print(slots["slot1"]["day"]) # Test
+
+
+############################################################
+##     Résolution du problème d'optimisation linéaire     ##
+############################################################
+
+
+# prob = LpProblem("Matching", LpMaximize)

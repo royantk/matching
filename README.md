@@ -18,6 +18,6 @@ Voici les arguments qu'un `slot` possède :
 
 Voici les arguments qu'un `artist` possède :
 
-- *`name`* : *(string)* : Nom du comédien 
+- *`name`* : *(string)* : Nom du comédien
 - *`level`* : *(int)* : Niveau du comédien
 - *`category`* *(int ou string on verra)* : Catégorie du comédien (1 = Femme, 2 = Homme)

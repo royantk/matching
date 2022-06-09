@@ -21,7 +21,15 @@ def compatible(artist, slot):
 ##     Import des données     ##
 ################################
 
-parameters = open("/Users/kiki/Documents/Algo Matching/matching/Comedy-Club-line-up.json").read()
+import tkinter as tk
+from tkinter import filedialog
+
+root = tk.Tk()
+root.withdraw()
+
+file_path = filedialog.askopenfilename()
+
+parameters = open(file_path).read()
 
 slots = json.loads(str(parameters))["slots"]
 artists = json.loads(str(parameters))["artists"]

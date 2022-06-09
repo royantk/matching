@@ -23,6 +23,22 @@
             "weeks": "1101",
             "level": 1,
             "category": "HF"
+        },
+        "slot4": {
+            "day": 5,
+            "hour": "18:00",
+            "capacity": 4,
+            "weeks": "1001",
+            "level": 4,
+            "category": "HF"
+        },
+        "slot5": {
+            "day": 5,
+            "hour": "20:00",
+            "capacity": 4,
+            "weeks": "1111",
+            "level": 0,
+            "category": "HF"
         }
     },
     "artists": {
@@ -40,6 +56,51 @@
             "name": "Christine Chirac",
             "level": 2,
             "category": "H"
+        },
+        "artist 4": {
+            "name": "Daphnée Dauce",
+            "level": 4,
+            "category": "F"
+        },
+        "artist 5": {
+            "name": "Ernest Ernst",
+            "level": 0,
+            "category": "H"
+        },
+        "artist 6": {
+            "name": "Fabrice Fauche",
+            "level": 3,
+            "category": "H"
+        },
+        "artist 7": {
+            "name": "Garance Gauchère",
+            "level": 2,
+            "category": "F"
+        },
+        "artist 8": {
+            "name": "Harry Hotter",
+            "level": 6,
+            "category": "H"
+        },
+        "artist 9": {
+            "name": "Irène Ile",
+            "level": 1,
+            "category": "F"
+        },
+        "artist 10": {
+            "name": "Jessy Jones",
+            "level": 4,
+            "category": "F"
+        },
+        "artist 11": {
+            "name": "Kevin Krout",
+            "level": 0,
+            "category": "H"
+        },
+        "artist 12": {
+            "name": "Laureta Langet",
+            "level": 5,
+            "category": "F"
         }
     }
 }

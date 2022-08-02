@@ -1,18 +1,15 @@
 # To-Do
 
-## Autres recherches
-
-- [x] Chercher comment décoder le JSON sur Python
-
-## ~~Recherches sur l'optimisation linéaire~~ (ABANDONNÉ)
-
-- [ ] ~~**Demander à Micka d'expliquer** l'algo d'optimisation linéaire avec le code~~
-- [ ] ~~Comprendre d'où viennent les **LpTrucs** (module ?)~~
-- [ ] ~~Comprendre à quoi ils servent (variables, prob, .lp, solve...)~~
-- [ ] ~~Comprendre les étapes à suivre (prob, variables, fonction, fichier, solve, sortie...)~~
-
-## Fonctionnement du programme
-
-- [x] Définir les règles de calcul du score *(**Priorités** (plutôt haut niveau d'abord ?), **quotas** (au moins 1 scène par personnes de niveau 2 par mois ?), etc.)*
-- [ ] ~~Comprendre quelles sont les **variables** (comédiens sur créneau x ?)~~
-- [ ] ~~Comprendre quelle sera la **sortie** (variables ?)~~
+- [ ]  Ajouter la priorité de répartition aux femmes
+  - [ ]  Dans le tri
+- [ ]  Ajouter le maximum de créneaux par niveau (”lvl 3” = “≤ 3 scènes”)
+  - [x]  Test si nb de scènes ≤ niveau
+- [ ]  Ajouter attribut `“WebTV”`
+  - [x]  Dans le joueur
+  - [x]  Dans le créneau
+  - [ ]  Test
+- [ ]  Ajouter attribut `“Non-disponibilités”`
+  - [x]  Dans le joueur
+  - [ ]  Test
+- [ ]  Ajouter affichage des créneaux non-assignés
+  - [ ]  Nombre de créneaux assignables - Somme (lvl)

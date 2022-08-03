@@ -153,7 +153,7 @@ while i < len(liste_artists):
     while j < liste_artists[i]["level"] and next_slot(liste_slots, liste_artists, i, week):
         j += 1
     week = (week + 1) % duree
-    j += 1
+    i += 1
 
 
 
@@ -168,14 +168,18 @@ liste_slots.sort(key=lambda x: x["date"])
 print("\nComédiens par créneaux :\n")
 for slot in liste_slots:
     print(
-        slot["name"] + "\n" # Nom
-        + datetime.fromtimestamp(slot["date"] - timezone*3600).strftime("%A %-d %B à %H:%M")
-        + " - " + str(len(slot["artists"])) + "/" + str(slot["capacity"])
-        + "\n(lvl min : " + str(slot["level"])
-        + ", cat : " + slot["category"] + ") \n-  "
+        slot["name"] + "\n"                                                                      # Nom du créneau
+        + datetime.fromtimestamp(slot["date"] - timezone*3600).strftime("%A %-d %B à %H:%M")        # Date
+        + " - " + str(len(slot["artists"])) + "/" + str(slot["capacity"])                           # Places
+        + "\n(lvl min : " + str(slot["level"])                                                      # Niveau minimum
+        + ", cat : " + slot["category"] + ") \n-  "                                                 # Catégorie
         + str([
-            x["name"] + " (" + str(x["level"]) + ")" for x in slot["artists"]
-            ]).replace("[", "").replace("]","").replace("'", "").replace(", ", "\n-  ")
+            x["name"]                                                                            # Nom de l'artiste
+            + " (" + x["category"]                                                                  # Catégorie
+            + " - " + str(x["level"]) + ")"                                                         # Niveau
+            for x in slot["artists"]
+            ])
+            .replace("[", "").replace("]","").replace("'", "").replace(", ", "\n-  ")
         + "\n"
     )
 
@@ -191,15 +195,16 @@ liste_artists.sort(key=lambda x: x["name"])
 print("\nCréneaux par comédiens :\n")
 for artist in liste_artists:
     print(
-        artist["name"]
-        + " (lvl " + str(artist["level"]) + ")"
-        + " - " + str(len(artist["slots"]))
-        + " créneaux :\n"
+        artist["name"]                                                                           # Nom de l'artiste
+        + " (" + x["category"]                                                                      # Catégorie
+        + " - lvl " + str(artist["level"]) + ")"                                                    # Niveau
+        + " - " + str(len(artist["slots"])) + " scènes :\n"                                         # Nombre de scènes
         + str([
-            artist["slots"][k]["name"] + " : " + datetime.fromtimestamp(
+            artist["slots"][k]["name"] + " : "                                                   # Nom du créneau
+            + datetime.fromtimestamp(                                                               # Date
                 artist["slots"][k]["date"] - timezone*3600
                 ).strftime("%A %-d %B à %H:%M")
-            + " (lvl " + str(artist["slots"][k]["level"]) + ")"
+            + " (lvl " + str(artist["slots"][k]["level"]) + ")"                                     # Niveau requis
             for k in range(len(artist["slots"]))
         ]).replace("[", "").replace("]", "").replace("'", "").replace(", ", "\n")
         + "\n"

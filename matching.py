@@ -19,16 +19,50 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sb
 
-
+# Compatibilité d'un artiste et d'un créneau
 def compatible(artist, slot):
     return (
         artist["level"] >= slot["level"] 
         and artist["category"] in slot["category"] 
-        #and len(artist["slots"]) < artist["level"]
+        # and len(artist["slots"]) < artist["level"]
         and len(slot["artists"]) < slot["capacity"]
-        and not artist["name"] + " (" + str(artist["level"]) + ')' in slot["artists"]
+        and not artist in slot["artists"]
         )
 
+
+# Tri d'une liste selon plusieurs arguments
+def trier(list, arguments):
+    list.sort(key=lambda x: [arg[0] * x[arg[1]] for arg in arguments])
+
+
+# Recherce du prochain meilleur créneau compatible avec un artiste
+def next_slot(liste_slots, liste_artists, indice, week):
+
+    trier(liste_slots, [[1, "category"], [-1, "level"], [-1, "places-left"]])
+
+    k = 0
+    # Cherche le prochain créneau de la semaine compatible
+    while k < len(liste_slots) and (not compatible(liste_artists[indice], liste_slots[k]) or liste_slots[k]["week"] != week) :
+        k += 1
+    if k < len(liste_slots):
+        liste_slots[k]["artists"].append(liste_artists[indice])
+        liste_slots[k]["places-left"] -= 1
+        liste_artists[indice]["slots"].append(liste_slots[k])
+        liste_artists[indice]["scenes-left"] -= 1
+        return True
+    
+    k = 0
+    # S'il n'a pas trouvé, cherche le prochain créneau compatible parmi tous
+    while k < len(liste_slots) and not compatible(liste_artists[indice], liste_slots[k]) :
+        k += 1
+    if k < len(liste_slots):
+        liste_slots[k]["artists"].append(liste_artists[indice])
+        liste_slots[k]["places-left"] -= 1
+        liste_artists[indice]["slots"].append(liste_slots[k])
+        liste_artists[indice]["scenes-left"] -= 1
+        return True
+    
+    return False
 
 ################################
 ##     Import des données     ##
@@ -80,10 +114,10 @@ for slot in slots:
             slot["date"] = slot["next"]/1000 + 7 * k * 60 * 60 * 24 + (int(slot["hour"][0]) * 10 + int(slot["hour"][1])) * 3600 + (int(slot["hour"][3]) * 10 + int(slot["hour"][4])) * 60
             slot["artists"] = []
             slot["places-left"] = slot["capacity"]
-            slot["nul"] = 0
+            slot["week"] = k
             liste_slots.append(deepcopy(slot))
 
-liste_slots.sort(key=lambda x: (3 - x["level"],x["date"]))   # Tri par niveau puis date
+liste_slots.sort(key=lambda x: (x["category"], -x["level"], x["date"]))   # Tri par niveau puis date
 
 
 ##################################################
@@ -97,14 +131,25 @@ for x in artists:
     liste_artists.append(x)
 
 # Tri par nombre de scènes croissant puis niveau décroissant
-liste_artists.sort(key=lambda x: (x["scenes-left"],x["level"]), reverse=True)
+trier(liste_artists, [[1, "category"], [-1, "level"]])
 
 
 #######################################
 ##     Assignation des comédiens     ##
 #######################################
 
+week = 0
+k = 0
 
+while k < len(liste_artists):
+    i = 0
+    while i < liste_artists[k]["level"] and next_slot(liste_slots, liste_artists, k, week):
+        i += 1
+    week = (week + 1) % duree
+    k += 1
+
+
+"""
 while len(liste_artists[0]["slots"]) < liste_artists[0]["level"] and len(liste_slots[0]["artists"]) < liste_slots[0]["capacity"]:
     i = 0
     while i < len(liste_artists)-1:
@@ -125,7 +170,7 @@ while len(liste_artists[0]["slots"]) < liste_artists[0]["level"] and len(liste_s
     liste_slots.sort(key=lambda x: (x["nul"], len(x["artists"]), -x["level"], x["date"]))
     print(liste_slots[0])
     #print("boucle 1 : ", i)
-
+"""
 
 """
 for slot in liste_slots:
@@ -150,13 +195,13 @@ liste_slots.sort(key=lambda x: x["date"])
 
 print("\nComédiens par créneaux :\n")
 for slot in liste_slots:
-    print(slot["nul"],
+    print(
         slot["name"] + "\n" + datetime.fromtimestamp(slot["date"] - timezone*3600).strftime("%A %-d %B à %H:%M")
         #+ " à " + slot["hour"]
         + " - " + str(len(slot["artists"])) + "/" + str(slot["capacity"])
         + "\n(lvl min : " + str(slot["level"])
         + ", cat : " + slot["category"] + ") \n-  "
-        + str(slot["artists"]).replace("[", "").replace("]",
+        + str([x["name"] + " (" + str(x["level"]) + ")" for x in slot["artists"]]).replace("[", "").replace("]",
                                                         "").replace("'", "").replace(", ", "\n-  ")
         + "\n"
     )
@@ -190,7 +235,7 @@ for artist in liste_artists:
 #################################
 
 print(pd.DataFrame(liste_slots))
-pd.DataFrame(liste_slots).plot(x="name", y = "places-left", kind='bar')
+pd.DataFrame(liste_slots).plot(x="name", y = ["places-left", "capacity"], kind='bar')
 plt.xticks(rotation=70, ha='right')
 plt.show()
 

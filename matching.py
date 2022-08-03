@@ -1,16 +1,16 @@
 
-'''
-══════════════════════════
-  ALGORITHME DE MATCHING  
-     Créé par Maghen      
-══════════════════════════
-'''
 
-###################################
-##     Modules et programmes     ##
-###################################
+####################################
+##     ALGORITHME DE MATCHING     ##
+##       Maghen - 4/08/2022       ##
+####################################
 
-# MODULES #
+
+'''═══════════════════════╗
+║  Modules et programmes  ║
+╚═══════════════════════'''
+
+## MODULES ##
 from tkinter import filedialog
 import tkinter as tk
 from copy import deepcopy
@@ -20,7 +20,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sb
 
-# FONCTION - COMPATIBILITÉ D'UN ARTISTE ET D'UN CRÉNEAU #
+## FONCTION - COMPATIBILITÉ D'UN ARTISTE ET D'UN CRÉNEAU ##
 def compatible(artist, slot):
     return (
         artist["level"] >= slot["level"] 
@@ -28,11 +28,11 @@ def compatible(artist, slot):
         and len(slot["artists"]) < slot["capacity"]
         and not artist in slot["artists"])
 
-# FONCTION - TRI D'UNE LISTE SELON PLUSIEURS ARGUMENTS #
+## FONCTION - TRI D'UNE LISTE SELON PLUSIEURS ARGUMENTS ##
 def trier(list, arguments):
     list.sort(key=lambda x: [arg[0] * x[arg[1]] for arg in arguments])
 
-# FONCTION - RECHERCE DU PROCHAIN MEILLEUR CRÉNEAU COMPATIBLE AVEC UN ARTISTE #
+## FONCTION - RECHERCE DU PROCHAIN MEILLEUR CRÉNEAU COMPATIBLE AVEC UN ARTISTE ##
 def next_slot(liste_slots, liste_artists, i, week):
 
     trier(liste_slots, [[1, "category"], [-1, "level"], [-1, "places-left"]])
@@ -62,18 +62,17 @@ def next_slot(liste_slots, liste_artists, i, week):
     return False
 
 
+'''════════════════════╗
+║  Import des données  ║
+╚════════════════════'''
 
-################################
-##     Import des données     ##
-################################
-
-# SÉLECION DU FICHIER SOURCE #
+## SÉLECION DU FICHIER SOURCE ##
 file_path = "Data.xlsx"
 #root = tk.Tk()
 #root.withdraw()
 #file_path = filedialog.askopenfilename()
 
-# LECTURE DES DONNÉES #
+## LECTURE DES DONNÉES ##
 slots = json.loads(
     pd.read_excel(file_path, sheet_name='slots', skiprows=1)
     .to_json(orient="records")
@@ -84,17 +83,16 @@ artists = json.loads(
     )
 
 
+'''═══════════════════════╗
+║  Création des créneaux  ║
+╚═══════════════════════'''
 
-###################################
-##     Création des créneaux     ##
-###################################
-
-# DONNÉES TEMPORELLES #
-#duree = input("Nombre de semaines de génération : ")
+## DONNÉES TEMPORELLES ##
 duree = 4
+#duree = input("Nombre de semaines de génération : ")
 timezone = 2
 
-# CONVERSION DES FRÉQUENCES DES CRÉNEAUX #
+## CONVERSION DES FRÉQUENCES DES CRÉNEAUX ##
 frequencies = {
     "week": "1111" * ((duree + 3) // 4),
     "bi": "1010" * ((duree + 3) // 4),
@@ -102,7 +100,7 @@ frequencies = {
     "month": "1000" * ((duree + 3) // 4)
 }
 
-# CRÉATION DE LA LISTE DES CRÉNEAUX #
+## CRÉATION DE LA LISTE DES CRÉNEAUX ##
 liste_slots = []
 for slot in slots:
     slot["dates"] = []
@@ -128,25 +126,25 @@ for slot in slots:
 
 
 
-##################################################
-##     Création et classement des comédiens     ##
-##################################################
+'''══════════════════════════════════════╗
+║  Création et classement des comédiens  ║
+╚══════════════════════════════════════'''
 
-# CRÉATION DE LA LISTE DES ARTISTES #
+## CRÉATION DE LA LISTE DES ARTISTES ##
 liste_artists = []
 for x in artists:
     x["slots"] = []
     x["scenes-left"] = x["level"]
     liste_artists.append(x)
 
-# TRI #
+## TRI ##
 trier(liste_artists, [[1, "category"], [-1, "level"]])
 
 
 
-#######################################
-##     Assignation des comédiens     ##
-#######################################
+'''═══════════════════════════╗
+║  Assignation des comédiens  ║
+╚═══════════════════════════'''
 
 week = 0
 i = 0
@@ -159,14 +157,14 @@ while i < len(liste_artists):
 
 
 
-################################
-##     Affichage créneaux     ##
-################################
+'''════════════════════╗
+║  Affichage créneaux  ║
+╚════════════════════'''
 
-# TRI CHRONOLIGIQUE #
+## TRI CHRONOLIGIQUE ##
 liste_slots.sort(key=lambda x: x["date"])
 
-# AFFICHAGE #
+## AFFICHAGE ##
 print("\nComédiens par créneaux :\n")
 for slot in liste_slots:
     print(
@@ -182,14 +180,14 @@ for slot in liste_slots:
     )
 
 
-#################################
-##     Affichage comédiens     ##
-#################################
+'''═════════════════════╗
+║  Affichage comédiens  ║
+╚═════════════════════'''
 
-# TRI ALPHABÉTIQUE #
+## TRI ALPHABÉTIQUE ##
 liste_artists.sort(key=lambda x: x["name"])
 
-# AFFICHAGE #
+## AFFICHAGE ##
 print("\nCréneaux par comédiens :\n")
 for artist in liste_artists:
     print(
@@ -208,12 +206,11 @@ for artist in liste_artists:
     )
 
 
+'''═════════════════╗
+║  Affichage stats  ║
+╚═════════════════'''
 
 """
-#################################
-##       Affichage stats       ##
-#################################
-
 print(pd.DataFrame(liste_slots))
 pd.DataFrame(liste_slots).plot(x="name", y = ["places-left", "capacity"], kind='bar')
 plt.xticks(rotation=70, ha='right')

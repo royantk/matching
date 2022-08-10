@@ -26,7 +26,16 @@ def compatible(artist, slot):
         artist["level"] >= slot["level"] 
         and artist["category"] in slot["category"] 
         and len(slot["artists"]) < slot["capacity"]
-        and not artist in slot["artists"])
+        and not artist in slot["artists"]
+        and (not slot["webTV"] or artist["webTV"])
+        and not slot["date"] - timezone*3600 - (
+                    int(slot["hour"][0]) * 10     #  Retrait des 1er et 2ème chiffres des heures
+                    + int(slot["hour"][1])
+                    ) * 3600 
+                - (
+                    int(slot["hour"][3]) * 10     #  Retrait des 1er et 2ème chiffres des minutes
+                    + int(slot["hour"][4])
+                    ) * 60 in artist["non-avaliable"])
 
 ## FONCTION - TRI D'UNE LISTE SELON PLUSIEURS ARGUMENTS ##
 def trier(list, arguments):
@@ -107,7 +116,7 @@ for slot in slots:
     freq = frequencies[slot["frequency"]]
     for j in range(duree):
         if freq[j] == "1":
-            slot["date"] = (
+            slot["date"] = int(
                 slot["next"]/1000                 #  Passage en secondes du jour du premier créneau
                 + 7 * j * 60 * 60 * 24            #  Changement de semaine
                 + (
@@ -135,6 +144,16 @@ liste_artists = []
 for x in artists:
     x["slots"] = []
     x["scenes-left"] = x["level"]
+    if isinstance(x["non-avaliable"], int):
+        print("yep")
+        x["non-avaliable"] = [(x["non-avaliable"]//1000)]
+    elif isinstance(x["non-avaliable"], str):
+        print("youra")
+        print(x["non-avaliable"].replace(" ","").split(","))
+        x["non-avaliable"] = [int(datetime.strptime(date, "%d/%m/%Y").timestamp()) for date in x["non-avaliable"].replace(" ","").split(",")]
+    else:
+        x["non-avaliable"] = []
+    print(x["non-avaliable"])
     liste_artists.append(x)
 
 ## TRI ##
@@ -172,6 +191,7 @@ for slot in liste_slots:
         + datetime.fromtimestamp(slot["date"] - timezone*3600).strftime("%A %-d %B à %H:%M")        # Date
         + " - " + str(len(slot["artists"])) + "/" + str(slot["capacity"])                           # Places
         + "\n(lvl min : " + str(slot["level"])                                                      # Niveau minimum
+        + ", webTV : " + str(slot["webTV"])                                                         # WebTV
         + ", cat : " + slot["category"] + ") \n-  "                                                 # Catégorie
         + str([
             x["name"]                                                                            # Nom de l'artiste
@@ -196,8 +216,9 @@ print("\nCréneaux par comédiens :\n")
 for artist in liste_artists:
     print(
         artist["name"]                                                                           # Nom de l'artiste
-        + " (" + x["category"]                                                                      # Catégorie
-        + " - lvl " + str(artist["level"]) + ")"                                                    # Niveau
+        + " (" + artist["category"]                                                                 # Catégorie
+        + ", lvl " + str(artist["level"])                                                           # Niveau
+        + ", WebTV : " + str(artist["webTV"]) + ")"                                                 # WebTV
         + " - " + str(len(artist["slots"])) + " scènes :\n"                                         # Nombre de scènes
         + str([
             artist["slots"][k]["name"] + " : "                                                   # Nom du créneau
@@ -211,18 +232,39 @@ for artist in liste_artists:
     )
 
 
+'''══════════════════════════════════════╗
+║  Affichage nombre de places restantes  ║
+╚══════════════════════════════════════'''
+
+print("\nNombre de places restantes dans les créneaux : ",
+sum([slot["places-left"] for slot in liste_slots])
+)
+
+print("Nombre de scènes restantes dans les comédiens : ",
+sum([artist["scenes-left"] for artist in liste_artists])
+)
+
+
 '''═════════════════╗
 ║  Affichage stats  ║
 ╚═════════════════'''
 
 """
-print(pd.DataFrame(liste_slots))
+set1 = {
+    "x1" : [x["name"] for x in liste_slots],
+    "y1a" : [len(x["artists"]) for x in liste_slots],
+    "y1b" : [x["capacity"] - len(x["artists"]) for x in liste_slots]
+}
+
+sb.barplot(data=set1, x="x1", y=["y1b","y1a"], stacked=True, color=["gray", "green"])
+"""
+
+#print(pd.DataFrame(liste_slots))
 pd.DataFrame(liste_slots).plot(x="name", y = ["places-left", "capacity"], kind='bar')
 plt.xticks(rotation=70, ha='right')
 plt.show()
 
-print(pd.DataFrame(liste_artists))
+#print(pd.DataFrame(liste_artists))
 pd.DataFrame(liste_artists).plot(x="name", y = ["scenes-left", "level"], kind='bar')
 plt.xticks(rotation=70, ha='right')
 plt.show()
-"""

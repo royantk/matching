@@ -134,7 +134,6 @@ for slot in slots:
             liste_slots.append(deepcopy(slot))
 
 
-
 '''══════════════════════════════════════╗
 ║  Création et classement des comédiens  ║
 ╚══════════════════════════════════════'''
@@ -145,15 +144,11 @@ for x in artists:
     x["slots"] = []
     x["scenes-left"] = x["level"]
     if isinstance(x["non-avaliable"], int):
-        print("yep")
         x["non-avaliable"] = [(x["non-avaliable"]//1000)]
     elif isinstance(x["non-avaliable"], str):
-        print("youra")
-        print(x["non-avaliable"].replace(" ","").split(","))
         x["non-avaliable"] = [int(datetime.strptime(date, "%d/%m/%Y").timestamp()) for date in x["non-avaliable"].replace(" ","").split(",")]
     else:
         x["non-avaliable"] = []
-    print(x["non-avaliable"])
     liste_artists.append(x)
 
 ## TRI ##
@@ -173,7 +168,6 @@ while i < len(liste_artists):
         j += 1
     week = (week + 1) % duree
     i += 1
-
 
 
 '''════════════════════╗
@@ -236,35 +230,76 @@ for artist in liste_artists:
 ║  Affichage nombre de places restantes  ║
 ╚══════════════════════════════════════'''
 
-print("\nNombre de places restantes dans les créneaux : ",
-sum([slot["places-left"] for slot in liste_slots])
-)
-
-print("Nombre de scènes restantes dans les comédiens : ",
-sum([artist["scenes-left"] for artist in liste_artists])
-)
+print(
+    "\nNombre de places restantes dans les créneaux : ",
+    sum([slot["places-left"] for slot in liste_slots])
+    )
+print(
+    "Nombre de scènes restantes dans les comédiens : ",
+    sum([artist["scenes-left"] for artist in liste_artists])
+    )
 
 
 '''═════════════════╗
 ║  Affichage stats  ║
 ╚═════════════════'''
 
-"""
-set1 = {
-    "x1" : [x["name"] for x in liste_slots],
-    "y1a" : [len(x["artists"]) for x in liste_slots],
-    "y1b" : [x["capacity"] - len(x["artists"]) for x in liste_slots]
-}
+## TRI DES CRÉNEAUX ##
+liste_slots.sort(key=lambda x: x["date"])
+#liste_slots.sort(key=lambda x: (x["name"],x["week"]))
 
-sb.barplot(data=set1, x="x1", y=["y1b","y1a"], stacked=True, color=["gray", "green"])
-"""
+## CRÉATION DU DATASET DES CRÉNEAUX ##
+slot_dataset = pd.DataFrame({
+    "Nom" : [x["name"] + " #" + str(x["week"] + 1) for x in liste_slots],
+    "Places occupées" : [len(x["artists"]) for x in liste_slots],
+    "Places libres" : [x["capacity"] - len(x["artists"]) for x in liste_slots],
+    "Hommes" : [sum([y["category"] == "H" for y in x["artists"]]) for x in liste_slots],
+    "Femmes" : [sum([y["category"] == "F" for y in x["artists"]]) for x in liste_slots],
+    "Nom + Catégorie" : [x["name"] + " #" + str(x["week"] + 1) + " (" + x["category"] + ")" for x in liste_slots],
+    "Niveau 1" : [sum([y["level"] == 1 for y in x["artists"]]) for x in liste_slots],
+    "Niveau 2" : [sum([y["level"] == 2 for y in x["artists"]]) for x in liste_slots],
+    "Niveau 3" : [sum([y["level"] == 3 for y in x["artists"]]) for x in liste_slots],
+    "Nom + Niveau" : [x["name"] + " #" + str(x["week"] + 1) + " (" + str(x["level"]) + ")" for x in liste_slots]
+})
+sb.set()
+figure, axes = plt.subplots(1, 2)
 
-#print(pd.DataFrame(liste_slots))
-pd.DataFrame(liste_slots).plot(x="name", y = ["places-left", "capacity"], kind='bar')
-plt.xticks(rotation=70, ha='right')
-plt.show()
+## PLOT 1 - RÉPARTITION DES CATÉGORIES ##
+slot_dataset.plot(
+    ax=axes[0], 
+    kind='bar', 
+    stacked=True, 
+    y=["Hommes", "Femmes", "Places libres"], 
+    color=["tab:blue", "tab:red", "lightgrey"], 
+    figsize=(9,4)
+    )
+axes[0].set_title("Répartition des catégories des artistes par créneau")
+axes[0].set_xlabel("Nom du créneau")
+axes[0].set_ylabel("Nombre de places")
 
-#print(pd.DataFrame(liste_artists))
-pd.DataFrame(liste_artists).plot(x="name", y = ["scenes-left", "level"], kind='bar')
-plt.xticks(rotation=70, ha='right')
+## PLOT 2 - RÉPARTITION DES NIVEAUX ##
+slot_dataset.plot(ax=axes[1], 
+kind='bar', 
+stacked=True, 
+y=["Niveau 1", "Niveau 2", "Niveau 3", "Places libres"], 
+color=["tab:green", "orange", "tab:red", "lightgrey"], 
+figsize=(9,4)
+)
+axes[1].set_title("Répartition des niveaux des artistes par créneau")
+axes[1].set_xlabel("Nom du créneau")
+axes[1].set_ylabel("Nombre de places")
+
+## PARAMÈTRES ET AFFICHAGE ##
+figure.set_size_inches(16, 7)
+axes[1].set_xticklabels(
+    slot_dataset["Nom + Niveau"], 
+    rotation = 50, 
+    ha="right"
+    )
+axes[0].set_xticklabels(
+    slot_dataset["Nom + Catégorie"], 
+    rotation = 50, 
+    ha="right"
+    )
+figure.tight_layout()
 plt.show()

@@ -303,3 +303,25 @@ axes[0].set_xticklabels(
     )
 figure.tight_layout()
 plt.show()
+
+
+'''════════════════╗
+║  Écriture Excel  ║
+╚════════════════'''
+
+pd_slots = {}
+for x in liste_slots:
+    pd_slot = {}
+    pd_slot["name"] = x["name"] + " #" + str(x["week"] + 1)
+    pd_slot["date"] = datetime.fromtimestamp(x["date"] - timezone*3600).strftime("%A %-d %B à %H:%M")
+    for i in range(len(x["artists"])):
+        pd_slot["artist" + str(i+1)] = x["artists"][i]["name"]
+    pd_slots[x["name"] + " #" + str(x["week"] + 1)] = pd_slot
+
+pd.io.formats.excel.ExcelFormatter.header_style = None
+df1 = pd.DataFrame(pd_slots).transpose()
+print(df1)
+
+with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists="overlay") as writer:
+    df1.to_excel(writer, sheet_name="slots-assignations", startrow=1, index=False) 
+

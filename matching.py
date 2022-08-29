@@ -252,7 +252,7 @@ liste_slots.sort(key=lambda x: x["date"])
 slot_dataset = pd.DataFrame({
     "Nom" : [x["name"] + " #" + str(x["week"] + 1) for x in liste_slots],
     "Places occupées" : [len(x["artists"]) for x in liste_slots],
-    "Places libres" : [x["capacity"] - len(x["artists"]) for x in liste_slots],
+    "Places libres" + " (" + str(sum([x["places-left"] for x in liste_slots])) + ")" : [x["capacity"] - len(x["artists"]) for x in liste_slots],
     "Hommes" : [sum([y["category"] == "H" for y in x["artists"]]) for x in liste_slots],
     "Femmes" : [sum([y["category"] == "F" for y in x["artists"]]) for x in liste_slots],
     "Nom + Catégorie" : [x["name"] + " #" + str(x["week"] + 1) + " (" + x["category"] + ")" for x in liste_slots],
@@ -269,7 +269,7 @@ slot_dataset.plot(
     ax=axes[0], 
     kind='bar', 
     stacked=True, 
-    y=["Hommes", "Femmes", "Places libres"], 
+    y=["Hommes", "Femmes", "Places libres" + " (" + str(sum([x["places-left"] for x in liste_slots])) + ")"], 
     color=["tab:blue", "tab:red", "lightgrey"], 
     figsize=(9,4)
     )
@@ -281,7 +281,7 @@ axes[0].set_ylabel("Nombre de places")
 slot_dataset.plot(ax=axes[1], 
 kind='bar', 
 stacked=True, 
-y=["Niveau 1", "Niveau 2", "Niveau 3", "Places libres"], 
+y=["Niveau 1", "Niveau 2", "Niveau 3", "Places libres" + " (" + str(sum([x["places-left"] for x in liste_slots])) + ")"], 
 color=["tab:green", "orange", "tab:red", "lightgrey"], 
 figsize=(9,4)
 )
@@ -309,6 +309,7 @@ plt.show()
 ║  Écriture Excel  ║
 ╚════════════════'''
 
+## RÉPARTITION CRÉNEAUX ##
 pd_slots = {}
 for x in liste_slots:
     pd_slot = {}
@@ -320,8 +321,21 @@ for x in liste_slots:
 
 pd.io.formats.excel.ExcelFormatter.header_style = None
 df1 = pd.DataFrame(pd_slots).transpose()
-print(df1)
 
 with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists="overlay") as writer:
     df1.to_excel(writer, sheet_name="slots-assignations", startrow=1, index=False) 
 
+## RÉPARTITION ARTISTES ##
+pd_artists = {}
+for x in liste_artists:
+    pd_artist = {}
+    pd_artist["name"] = x["name"] + " (" + str(x["level"]) + ")"
+    for i in range(len(x["slots"])):
+        pd_artist["slot" + str(i+1)] = datetime.fromtimestamp(x["slots"][i]["date"] - timezone*3600).strftime("%A %-d %B à %H:%M") + " (" + x["slots"][i]["name"] + ")"
+    pd_artists[x["name"] + " (" + str(x["level"]) + ")"] = pd_artist
+
+pd.io.formats.excel.ExcelFormatter.header_style = None
+df2 = pd.DataFrame(pd_artists).transpose()
+
+with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists="overlay") as writer:
+    df2.to_excel(writer, sheet_name="artists-assignations", startrow=1, index=False) 

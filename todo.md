@@ -4,9 +4,9 @@
 
 - [x]  Ajouter affichage des créneaux non-assignés
   - [x]  Nombre de créneaux assignables - Somme (lvl)
-  - [ ]  Ajouter dans le Excel
-- [ ]  Écrire la répartition dans le Excel d'entrée
-  - [ ]  Artistes
+  - [x]  Ajouter dans le (~~Excel~~) graphique
+- [x]  Écrire la répartition dans le Excel d'entrée
+  - [x]  Artistes
   - [x]  Créneaux
 
 ## Projet
